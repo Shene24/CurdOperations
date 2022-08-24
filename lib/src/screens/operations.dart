@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class operations extends StatelessWidget {
    operations({Key? key}) : super(key: key);
   final FirebaseFirestore _firebaseFirestore =    FirebaseFirestore.instance;
+  final TextEditingController _namecontroller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +15,21 @@ class operations extends StatelessWidget {
       body: Container(
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center ,
             children: [
-              Text("hello"),
+              //Text("hello"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: _namecontroller,
+                  decoration: InputDecoration(border: OutlineInputBorder()),
+                ),
+              ),
+              Divider(
+               height: 25,
+              ), //used for space 
               ElevatedButton(onPressed: (){
-                addName();
+                addName(name: _namecontroller.text);
               }, child: Text("ADD DATA"))
             ],
           ),
@@ -26,8 +38,13 @@ class operations extends StatelessWidget {
       ),
     );
   }
-  addName(){
-    _firebaseFirestore.collection("secondCollection").add({"first_name": "shene"
+  //make is a name paramiter by putting inside a {} and adding ? after the string we made it nullable
+  addName({String? name }){
+    _firebaseFirestore.collection("secondCollection").add({
+      "first_name": "$name",
+      // "position": "studnet",
+      // "age": 24,
+      // "fav songs": ["song1", "song2"]
     });
 
   }
