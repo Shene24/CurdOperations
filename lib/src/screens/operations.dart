@@ -17,7 +17,21 @@ class operations extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center ,
             children: [
-              //Text("hello"),
+              Container(
+                child: FutureBuilder<DocumentSnapshot>(
+                  future: readDoc(),
+                  builder:(context, snapshot) {
+                    if(snapshot.connectionState ==ConnectionState.waiting){
+                      return CircularProgressIndicator();
+                    }else if (snapshot.data==null|| !snapshot.hasData){
+                      return Text("empty");
+                    } else if (snapshot.hasError){
+                      return Text(snapshot.error.toString());
+                    }
+                    return Text(snapshot.data!.data().toString());
+                  }),
+                   
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 // child: TextField(
@@ -82,6 +96,7 @@ class operations extends StatelessWidget {
     await  _firebaseFirestore.doc("secondCollection/DvvrSW7YXMkzCx7eq1Ue").get();
     print(_doc.data());
     return _doc;
+
   }
 }
 /*summary: we added firebase core to connenct it with the firebase, and the databse that we use in firebsae is cloud firestore
