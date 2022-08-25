@@ -46,10 +46,10 @@ class operations extends StatelessWidget {
                height: 25,
               ), //used for space 
               ElevatedButton(
-                onPressed: (){
+                onPressed: ()async{
                   if(_formKey.currentState!.validate()==true){
                     debugPrint("form validated");
-                    addName(name: _namecontroller.text);
+                    addName(name: _namecontroller.text).then((value) => print(value.path));//showing the path of the doc
               } else{
                 debugPrint("form is not validated");
               }
@@ -75,7 +75,13 @@ class operations extends StatelessWidget {
       // "fav songs": ["song1", "song2"]
     });
     return _doc;
-
+  //aysnc needs time we should add waiting
+  }
+  Future <DocumentSnapshot> readDoc()async{
+    DocumentSnapshot _doc =
+    await  _firebaseFirestore.doc("secondCollection/DvvrSW7YXMkzCx7eq1Ue").get();
+    print(_doc.data());
+    return _doc;
   }
 }
 /*summary: we added firebase core to connenct it with the firebase, and the databse that we use in firebsae is cloud firestore
