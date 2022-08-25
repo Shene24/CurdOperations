@@ -37,9 +37,9 @@ class operations extends StatelessWidget {
                         }, 
                         controller: _namecontroller,
                         decoration: InputDecoration(border: OutlineInputBorder()),
-                      )
+                      ),
                     ],
-                  )
+                  ),
                  ),
               ),
               Divider(
@@ -47,8 +47,14 @@ class operations extends StatelessWidget {
               ), //used for space 
               ElevatedButton(
                 onPressed: (){
-                addName(name: _namecontroller.text);
-              }, child: Text("ADD DATA"))
+                  if(_formKey.currentState!.validate()==true){
+                    debugPrint("form validated");
+                    addName(name: _namecontroller.text);
+              } else{
+                debugPrint("form is not validated");
+              }
+              },
+              child: Text("ADD DATA"))
             ],
           ),
           
