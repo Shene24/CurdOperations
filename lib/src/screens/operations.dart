@@ -17,6 +17,22 @@ class operations extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center ,
             children: [
+              Text("read the entire collection docs once"),
+              Container(
+                child: FutureBuilder(
+                  future: getDataOnce(), 
+                  builder: (context, snapshot) {
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                      
+                    }else if (snapshot.hasError){
+                      return Text("no data");
+                    }
+                    return Text(snapshot.data.toString());
+                  }),
+              ),
               Container(
                 child: FutureBuilder<DocumentSnapshot>(
                   future: readDoc(),
@@ -97,7 +113,13 @@ class operations extends StatelessWidget {
     print(_doc.data());
     return _doc;
 
+    //reading single doc
+
   }
+ Future<QuerySnapshot<Map<String, dynamic>>> getDataOnce()async{
+  return await _firebaseFirestore.collection("seconCollection").get();
+
+ }
 }
 /*summary: we added firebase core to connenct it with the firebase, and the databse that we use in firebsae is cloud firestore
 then u have to add could firestore package 
