@@ -17,12 +17,46 @@ class operations extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center ,
             children: [
-              getDataUsingFutureBuilder(),
-              readOneDoc(),
+              //get data using future builder
+              //getDataUsingFutureBuilder(),
+              Container(
+                height: 350,
+                padding: EdgeInsets.all(10),
+                  child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: _firebaseFirestore.collection("secondCollection").snapshots(),
+                  builder: (context, snapshot){
+                    if(snapshot.connectionState == ConnectionState.waiting){
+                      return CircularProgressIndicator();
+                    }else if(snapshot.hasError){
+                      return Text("err ${snapshot.error}");
+                    }else if (snapshot.data ==null){
+                      return Text("no data");
+                    }
+                    snapshot.data!.docs.first;
+
+                    return ListView.separated(
+                      itemCount: snapshot.data!.docs.length, 
+                      separatorBuilder:(BuildContext context, int index){
+                        return Divider();
+                      },
+                      itemBuilder: (BuildContext context, int index) { 
+                        return Text(
+                          snapshot.data!.docs[index].data()["first_name"].toString());
+                      },
+                      );
+                      
+                      
+                      //   return Text(snapshot.data!.docs.first.data()["first_name"].toString());
+                        
+                       }),
+
+              
+              ),
+              //readOneDoc(),
             
              
               Padding(
-                padding: const EdgeInsets.all(9.0),
+                padding: const EdgeInsets.all(20),
                 // child: TextField(
                 //   controller: _namecontroller,
                 //   decoration: InputDecoration(border: OutlineInputBorder()),
@@ -40,14 +74,15 @@ class operations extends StatelessWidget {
                         }, 
                         controller: _namecontroller,
                         decoration: InputDecoration(border: OutlineInputBorder()),
+                        
                       ),
                     ],
                   ),
                  ),
               ),
-              Divider(
-               height: 15,
-              ), //used for space 
+              // Divider(
+              //  height: 15,
+              // ), //used for space 
               ElevatedButton(
                 onPressed: ()async{
                   if(_formKey.currentState!.validate()==true){
@@ -131,7 +166,7 @@ class operations extends StatelessWidget {
  Widget readOneDoc(){
   return  Column(
                 children: [
-                  Text("read one specific doc"),
+                 // Text("read one specific doc"),
                   Container(
                     child: FutureBuilder<DocumentSnapshot>(
                       future: readDoc(),
