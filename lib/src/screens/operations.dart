@@ -19,7 +19,9 @@ class operations extends StatelessWidget {
             children: [
               Text("read the entire collection docs once"),
               Container(
-                child: FutureBuilder(
+                height: 250,
+                 
+                child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   future: getDataOnce(), 
                   builder: (context, snapshot) {
                     if(snapshot.connectionState == ConnectionState.waiting){
@@ -28,11 +30,23 @@ class operations extends StatelessWidget {
                       );
                       
                     }else if (snapshot.hasError){
+                      return Text(snapshot.error.toString());
+                    }else if (snapshot.data ==null){
                       return Text("no data");
                     }
-                    return Text(snapshot.data.toString());
+
+                   return  ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        return Text(
+                          snapshot.data!.docs[index].data()["first_name"].toString());
+                        
+                        
+                      });
+                       
                   }),
               ),
+              Text("read one specific doc"),
               Container(
                 child: FutureBuilder<DocumentSnapshot>(
                   future: readDoc(),
@@ -49,7 +63,7 @@ class operations extends StatelessWidget {
                    
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(9.0),
                 // child: TextField(
                 //   controller: _namecontroller,
                 //   decoration: InputDecoration(border: OutlineInputBorder()),
@@ -73,7 +87,7 @@ class operations extends StatelessWidget {
                  ),
               ),
               Divider(
-               height: 25,
+               height: 15,
               ), //used for space 
               ElevatedButton(
                 onPressed: ()async{
@@ -117,7 +131,7 @@ class operations extends StatelessWidget {
 
   }
  Future<QuerySnapshot<Map<String, dynamic>>> getDataOnce()async{
-  return await _firebaseFirestore.collection("seconCollection").get();
+  return await _firebaseFirestore.collection("secondCollection").get();
 
  }
 }
