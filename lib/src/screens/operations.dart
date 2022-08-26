@@ -17,51 +17,10 @@ class operations extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center ,
             children: [
-              Text("read the entire collection docs once"),
-              Container(
-                height: 250,
-                 
-                child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  future: getDataOnce(), 
-                  builder: (context, snapshot) {
-                    if(snapshot.connectionState == ConnectionState.waiting){
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                      
-                    }else if (snapshot.hasError){
-                      return Text(snapshot.error.toString());
-                    }else if (snapshot.data ==null){
-                      return Text("no data");
-                    }
-
-                   return  ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        return Text(
-                          snapshot.data!.docs[index].data()["first_name"].toString());
-                        
-                        
-                      });
-                       
-                  }),
-              ),
-              Text("read one specific doc"),
-              Container(
-                child: FutureBuilder<DocumentSnapshot>(
-                  future: readDoc(),
-                  builder:(context, snapshot) {
-                    if(snapshot.connectionState ==ConnectionState.waiting){
-                      return CircularProgressIndicator();
-                    }else if (snapshot.data==null|| !snapshot.hasData){
-                      return Text("empty");
-                    } else if (snapshot.hasError){
-                      return Text(snapshot.error.toString());
-                    }
-                    return Text(snapshot.data!.data().toString());
-                  }),
-                   
-              ),
+              getDataUsingFutureBuilder(),
+              readOneDoc(),
+            
+             
               Padding(
                 padding: const EdgeInsets.all(9.0),
                 // child: TextField(
@@ -133,6 +92,63 @@ class operations extends StatelessWidget {
  Future<QuerySnapshot<Map<String, dynamic>>> getDataOnce()async{
   return await _firebaseFirestore.collection("secondCollection").get();
 
+ }
+ Widget getDataUsingFutureBuilder(){
+  return   Column(
+                children: [
+                  Text("read the entire collection docs once"),
+                  Container(
+                    height: 250,
+                     
+                    child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      future: getDataOnce(), 
+                      builder: (context, snapshot) {
+                        if(snapshot.connectionState == ConnectionState.waiting){
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                          
+                        }else if (snapshot.hasError){
+                          return Text(snapshot.error.toString());
+                        }else if (snapshot.data ==null){
+                          return Text("no data");
+                        }
+
+                       return  ListView.builder(
+                          itemCount: snapshot.data!.docs.length,
+                          itemBuilder: (context, index) {
+                            return Text(
+                              snapshot.data!.docs[index].data()["first_name"].toString());
+                            
+                            
+                          });
+                           
+                      }),
+                  ),
+                ],
+              );
+ }
+ Widget readOneDoc(){
+  return  Column(
+                children: [
+                  Text("read one specific doc"),
+                  Container(
+                    child: FutureBuilder<DocumentSnapshot>(
+                      future: readDoc(),
+                      builder:(context, snapshot) {
+                        if(snapshot.connectionState ==ConnectionState.waiting){
+                          return CircularProgressIndicator();
+                        }else if (snapshot.data==null|| !snapshot.hasData){
+                          return Text("empty");
+                        } else if (snapshot.hasError){
+                          return Text(snapshot.error.toString());
+                        }
+                        return Text(snapshot.data!.data().toString());
+                      }),
+                       
+                  ),
+                ],
+              );
  }
 }
 /*summary: we added firebase core to connenct it with the firebase, and the databse that we use in firebsae is cloud firestore
